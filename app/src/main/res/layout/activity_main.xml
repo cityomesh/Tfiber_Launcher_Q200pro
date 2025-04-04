@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:background="@drawable/launcher_background"
+    android:focusableInTouchMode="true"
+    tools:context=".MainActivity">
+
+    <!-- Guideline for vertical positioning -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_video_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="280dp"
+        android:layout_height="130dp"
+        android:focusable="false"
+        android:src="@drawable/tfiber_logo"
+        app:layout_constraintBottom_toTopOf="@id/texture_view_container"
+        app:layout_constraintEnd_toEndOf="@id/texture_view_container"
+        app:layout_constraintStart_toStartOf="@id/texture_view_container"
+        android:translationY="20dp"/> <!-- Move image up -->
+
+
+    <ImageView
+        android:id="@+id/bsnllogo"
+        android:layout_width="230dp"
+        android:layout_height="180dp"
+        android:translationX="50dp"
+        android:translationY="-30dp"
+        android:src="@drawable/bsnl_logo"
+        android:contentDescription="Bsnl Image"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!-- Settings Icon (Before ClockContainer) -->
+    <ImageView
+        android:id="@+id/settingsIcon"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="83dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:nextFocusLeft="@id/recyclerViewLeft"
+        android:nextFocusRight="@id/updateIcon"
+        android:nextFocusDown="@+id/recyclerViewLeft"
+        android:src="@drawable/settings2"
+        app:layout_constraintEnd_toStartOf="@id/clockContainer"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Update Icon (Next to Settings Icon) -->
+    <ImageView
+        android:id="@+id/updateIcon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="95dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="100dp"
+        android:clickable="true"
+        android:contentDescription="Update Icon"
+        android:focusable="true"
+        android:nextFocusLeft="@id/settingsIcon"
+        android:nextFocusRight="@id/recyclerViewRight"
+        android:nextFocusDown="@+id/recyclerViewRight"
+        android:src="@drawable/update"
+        android:background="@drawable/update_icon_background"
+        app:layout_constraintEnd_toStartOf="@id/clockContainer"
+        app:layout_constraintStart_toEndOf="@id/settingsIcon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Digital Clock Widget at the right side of the screen -->
+    <LinearLayout
+        android:id="@+id/clockContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="50dp"
+        android:focusable="false"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextClock
+            android:id="@+id/timeClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="hh:mm:ss a"
+            android:format24Hour="HH:mm:ss"
+            android:textColor="@color/my_clock_color"
+            android:textSize="20sp" />
+
+        <TextClock
+            android:id="@+id/dateClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:format12Hour="EEEE, MMM dd"
+            android:format24Hour="EEEE, MMM dd"
+            android:textColor="@color/my_clock_color"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+
+    <!-- Left-side icons -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewLeft"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:nextFocusDown="@+id/recyclerViewLeft"
+        android:nextFocusUp="@id/settingsIcon"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/texture_view_container"
+        app:layout_constraintTop_toTopOf="@id/texture_view_container"
+        app:layout_constraintBottom_toBottomOf="@id/texture_view_container" />
+
+    <!-- Video Frame -->
+    <FrameLayout
+        android:id="@+id/texture_view_container"
+        android:layout_width="400dp"
+        android:layout_height="250dp"
+        android:background="@drawable/rounded_video_background"
+        android:clipToOutline="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="120dp">
+
+        <TextureView
+            android:id="@+id/bannerTextureView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </FrameLayout>
+
+    <!-- Right-side icons -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewRight"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:nextFocusDown="@+id/recyclerViewRight"
+        android:nextFocusUp="@id/updateIcon"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/texture_view_container"
+        app:layout_constraintTop_toTopOf="@id/texture_view_container"
+        app:layout_constraintBottom_toBottomOf="@id/texture_view_container"/>  <!-- Reduce vertical gap -->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:id="@+id/telanganaImage"
+            android:layout_width="880dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bottom_banner"
+            android:scaleType="fitXY"
+            android:paddingTop="380dp"/>
+
+        <!--
+        <TextView
+            android:id="@+id/iconText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:gravity="center"/>        -->
+
+
+        <ImageView
+            android:id="@+id/customercare"
+            android:layout_width="500dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/customer_care"
+            android:scaleType="fitXY"
+            android:paddingTop="5dp"/>
+
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

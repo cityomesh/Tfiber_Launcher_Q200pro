@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <inset xmlns:android="http://schemas.android.com/apk/res/android"
+            android:insetLeft="25dp"
+            android:insetTop="20dp"
+            android:insetRight="25dp"
+            android:insetBottom="20dp">
+            <shape>
+                <solid android:color="#80FFFFFF" /> <!-- Semi-transparent white -->
+                <corners android:radius="8dp" />
+            </shape>
+        </inset>
+    </item>
+    <item>
+        <color android:color="@android:color/transparent" /> <!-- No highlight when not focused -->
+    </item>
+</selector>
