@@ -14,7 +14,7 @@ class EEducationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ehealth)
+        setContentView(R.layout.activity_eeducation)
 
         val recyclerView = findViewById<RecyclerView>(R.id.iconRecyclerView)
 

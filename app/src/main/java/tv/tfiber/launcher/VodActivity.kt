@@ -14,7 +14,7 @@ class VodActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_webview)
+        setContentView(R.layout.activity_vod)
 
         val recyclerView = findViewById<RecyclerView>(R.id.iconRecyclerView)
 
