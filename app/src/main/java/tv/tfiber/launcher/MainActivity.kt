@@ -378,6 +378,11 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this, VodActivity::class.java)
                     startActivity(intent)
                 }
+                "in.webgrid.ulkatv" -> {
+                    Log.d("MainActivity", "Opening AppsActivity")
+                    val intent = Intent(this, AppsActivity::class.java)
+                    startActivity(intent)
+                }
                 else -> {
                     if (iconItem.url != null) {
                         openWebPage(iconItem.url)
@@ -413,7 +418,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
 
         // Set default focus to the first item in the left RecyclerView
         recyclerViewLeft.post {

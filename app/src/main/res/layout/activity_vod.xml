@@ -13,6 +13,117 @@
         android:scaleType="centerCrop"
         android:src="@drawable/launcher_background" />
 
+    <!-- Dummy Top Banner (Fix for missing topBanner ID) -->
+    <View
+        android:id="@+id/topBanner"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <!-- Settings Icon -->
+    <ImageView
+        android:id="@+id/settingsIcon"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="83dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusLeft="@id/recyclerViewLeft"
+        android:nextFocusRight="@id/updateIcon"
+        android:nextFocusDown="@+id/recyclerViewLeft"
+        android:background="@drawable/update_icon_background"
+        android:src="@drawable/settings2"
+        app:layout_constraintEnd_toStartOf="@id/clockContainer"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Update Icon -->
+    <ImageView
+        android:id="@+id/updateIcon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="95dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="100dp"
+        android:clickable="true"
+        android:contentDescription="Update Icon"
+        android:focusable="true"
+        android:nextFocusDown="@+id/iconRecyclerView"
+        android:nextFocusLeft="@id/settingsIcon"
+        android:nextFocusRight="@id/recyclerViewRight"
+        android:background="@drawable/update_icon_background"
+        android:src="@drawable/update"
+        app:layout_constraintEnd_toStartOf="@id/clockContainer"
+        app:layout_constraintStart_toEndOf="@id/settingsIcon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Clock -->
+    <LinearLayout
+        android:id="@+id/clockContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="50dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextClock
+            android:id="@+id/timeClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="hh:mm:ss a"
+            android:format24Hour="HH:mm:ss"
+            android:textColor="@color/my_clock_color"
+            android:textSize="20sp" />
+
+        <TextClock
+            android:id="@+id/dateClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:format12Hour="EEEE, MMM dd"
+            android:format24Hour="EEEE, MMM dd"
+            android:textColor="@color/my_clock_color"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- NEW IMAGE BELOW MAIN ICON -->
+    <ImageView
+        android:id="@+id/bottomImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="6dp"
+        android:src="@drawable/media_player"
+        android:visibility="gone"
+        android:tint="@android:color/white"
+        android:alpha="0.8" />
+
+        <!-- Inside activity_vod.xml -->
+        <ImageView
+            android:id="@+id/mainIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerInside"
+            android:layout_marginBottom="4dp"/>
+
+    </LinearLayout>
+
+
     <!-- URL Display -->
     <TextView
         android:id="@+id/urlTextView"
@@ -20,9 +131,10 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textColor="@android:color/black"
-        android:layout_centerInParent="true"
-        android:padding="16dp"
-        android:text="Loading..." />
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/clockContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- WebView -->
     <WebView
@@ -31,26 +143,43 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <!-- Top Banner -->
-    <ImageView
-        android:id="@+id/topBanner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        android:src="@drawable/bottom_banner"
-        android:translationY="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8" />
-
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/iconRecyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:nextFocusRight="@id/updateIcon"
+        android:nextFocusDown="@+id/recyclerViewLeft"
+        android:translationX="90dp"
+        android:translationY="110dp"
         app:layout_constraintTop_toBottomOf="@id/topBanner"
         app:layout_constraintStart_toStartOf="@id/topBanner"
-        app:layout_constraintEnd_toEndOf="@id/topBanner"
-        android:translationY="20dp" />
+        app:layout_constraintEnd_toEndOf="@id/topBanner" />
+
+    <!-- Bottom Banner -->
+    <!-- <ImageView
+        android:id="@+id/bottomBanner"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/bottom_banner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" /> -->
+
+
+    <ImageView
+        android:id="@+id/bottomBanner"
+        android:layout_width="150dp"  
+        android:layout_height="700dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/line"
+        android:translationY="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="12dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
