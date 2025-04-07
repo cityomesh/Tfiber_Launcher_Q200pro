@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -38,6 +39,15 @@ class LauncherAdapter(
     override fun onBindViewHolder(holder: IconViewHolder, position: Int) {
         val iconItem = icons[position]
         holder.bind(iconItem, onItemClick)
+        // Check if the current activity is VodActivity and apply the style accordingly.
+        if ((holder.itemView.context as? AppCompatActivity)?.javaClass == VodActivity::class.java) {
+            holder.itemView.setBackgroundResource(R.drawable.transparent_background) // Apply transparent background drawable
+        } else {
+            // Optionally, set a default background if your items don't have one.
+            // holder.itemView.setBackgroundResource(R.drawable.default_background)
+        }
+
+
     }
 
     override fun getItemCount(): Int {

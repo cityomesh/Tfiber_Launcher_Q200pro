@@ -20,8 +20,6 @@ class AppsActivity : AppCompatActivity() {
 
         // Define icon list with increased size
         val leftIcons = listOf(
-            IconItem(R.drawable.livetv_logo, "", "tv.ulka.ulkalite"),
-            IconItem(R.drawable.vod, "", "com.example.vodapp"),
             IconItem(R.drawable.apps, "", "in.webgrid.ulkatv"),
             IconItem(R.drawable.youtube, "", "com.google.android.youtube"), // YOUTUBE APP
         )

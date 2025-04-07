@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="my_clock_color">#ffffff</color> <!-- Example: Yellow -->
+    <color name="my_clock_color">#ffffff</color>
+    <color name="gray">#CCCCCC</color><!-- Example: Yellow -->
     <!-- Add other colors here if needed -->
 </resources>

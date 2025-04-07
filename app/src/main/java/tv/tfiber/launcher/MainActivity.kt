@@ -51,6 +51,7 @@ import android.widget.FrameLayout
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import android.content.ActivityNotFoundException
 
 class MainActivity : AppCompatActivity() {
 
@@ -344,8 +345,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         val leftIcons = listOf(
             IconItem(R.drawable.livetv_logo, "", "tv.ulka.ulkalite"),
+            IconItem(R.drawable.youtube, "", "com.google.android.youtube"), // YOUTUBE APP
             IconItem(R.drawable.vod, "", "com.example.vodapp"),
-            IconItem(R.drawable.tv_guide, "", "com.example.tvguideapp"),
             IconItem(R.drawable.media_player, "", "com.example.mediaplayer"),
             IconItem(R.drawable.apps, "", "in.webgrid.ulkatv"),
             IconItem(R.drawable.reminders, "", "com.example.remindersapp")
@@ -383,6 +384,15 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this, AppsActivity::class.java)
                     startActivity(intent)
                 }
+                "com.google.android.youtube" -> {
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"))
+                        intent.setPackage("com.google.android.youtube")
+                        startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com")))
+                    }
+                }
                 else -> {
                     if (iconItem.url != null) {
                         openWebPage(iconItem.url)
@@ -393,9 +403,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
         recyclerViewRight.adapter = LauncherAdapter(rightIcons) { iconItem ->
             when {
-                iconItem.packageName == "com.example.tfibervdi" -> {
+                iconItem.packageName == "com.example.myfiles" -> {
                     val intent = Intent(this, VirtualPCActivity::class.java)
                     startActivity(intent)
                 }

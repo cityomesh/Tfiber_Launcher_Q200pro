@@ -2,25 +2,27 @@ package tv.tfiber.launcher
 
 import android.content.*
 import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.SoundPool
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.core.content.ContextCompat
 
 class VodActivity : AppCompatActivity() {
 
     private lateinit var soundPool: SoundPool
     private var clickSoundId: Int = 0
-    private lateinit var adapter: LauncherAdapter
+    private lateinit var appGamesAdapter: LauncherAdapter
+    private lateinit var videoAdapter: LauncherAdapter // New adapter for videos
+    private val appGamesIcons = mutableListOf<IconItem>()
+    private val videoIcons = mutableListOf<IconItem>() // New list for video icons
+    private lateinit var iconRecyclerView: RecyclerView
+    private lateinit var videoRecyclerView: RecyclerView
+
     private val allIcons = mutableListOf<IconItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,151 +32,136 @@ class VodActivity : AppCompatActivity() {
         // Load sound
         initSoundPool()
 
-        val recyclerView = findViewById<RecyclerView>(R.id.iconRecyclerView)
-        val settingsIcon = findViewById<ImageView>(R.id.settingsIcon)
-        val updateIcon = findViewById<ImageView>(R.id.updateIcon)
-        settingsIcon.background = ContextCompat.getDrawable(this, R.drawable.hover_background)
-        val bottomImage: ImageView = findViewById(R.id.bottomImage)
+        iconRecyclerView = findViewById(R.id.iconRecyclerView)
+        videoRecyclerView = findViewById(R.id.videoRecyclerView) // Initialize video RecyclerView
+        val appGamesTab = findViewById<TextView>(R.id.appGamesTab)
+        val videoTab = findViewById<TextView>(R.id.videoTab)
 
-        // Set focus navigation directions
-        settingsIcon.nextFocusDownId = R.id.iconRecyclerView
-        updateIcon.nextFocusDownId = R.id.iconRecyclerView
-        updateIcon.nextFocusLeftId = R.id.settingsIcon
-        recyclerView.nextFocusUpId = R.id.settingsIcon
+        val appGamesAdditionalIcons = listOf(
+            IconItem(R.drawable.diksha, "", "com.google.android.youtube"),
+            IconItem(R.drawable.tsat, "", "com.google.android.youtube"),
+            IconItem(R.drawable.ndli, "digital library", "com.google.android.youtube"),
+            IconItem(R.drawable.byjus, "digital library", "com.google.android.youtube")
 
-        // Make sure settingsIcon is focused by default
-        settingsIcon.requestFocus()
 
-        val appGamesIcon = listOf(
-            IconItem(R.drawable.appsgames, "", "in.webgrid.ulkatv", bottomImageResId = R.drawable.media_player)
         )
 
-        val additionalIcons = listOf(
-            IconItem(R.drawable.netflix, "", url = "https://www.netflix.com/in/"),
-            IconItem(R.drawable.youtube, "", "com.google.android.youtube"),
-            IconItem(R.drawable.hostar, "", url = "https://www.hotstar.com/in/home?ref=%2Fin"),
-            IconItem(R.drawable.nbc, "", url = "https://www.nbc.com/")
+        appGamesIcons.addAll(appGamesAdditionalIcons)
+
+        appGamesAdapter = LauncherAdapter(appGamesIcons) { iconItem ->
+            handleIconClick(iconItem)
+        }
+
+        iconRecyclerView.layoutManager = GridLayoutManager(this, 7)
+        iconRecyclerView.adapter = appGamesAdapter
+
+        // --- Video Icons ---
+        val videoAdditionalIcons = listOf(
+            IconItem(R.drawable.thumbnail1, "", "com.google.android.youtube")
         )
+        
+        videoIcons.addAll(videoAdditionalIcons)
 
-        allIcons.addAll(appGamesIcon)
+        videoAdapter = LauncherAdapter(videoIcons) { iconItem ->
+            handleIconClick(iconItem)
+        }
 
-        adapter = LauncherAdapter(allIcons) { iconItem ->
-            if (iconItem.packageName == "in.webgrid.ulkatv") {
-                // Toggle logic: Expand or Collapse
-                if (allIcons.size == 1) {
-                    allIcons.addAll(additionalIcons)
-                    adapter.notifyItemRangeInserted(1, additionalIcons.size)
-                } else {
-                    allIcons.clear()
-                    allIcons.addAll(appGamesIcon)
-                    adapter.notifyDataSetChanged()
+        videoRecyclerView.layoutManager = GridLayoutManager(this, 7)
+        videoRecyclerView.adapter = videoAdapter
 
-                    // Refocus on Appsgames icon
-                    recyclerView.post {
-                        recyclerView.findViewHolderForAdapterPosition(0)?.itemView?.requestFocus()
-                    }
-                }
-            } else {
-                when {
-                    iconItem.packageName == "com.google.android.youtube" -> {
-                        try {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"))
-                            intent.setPackage("com.google.android.youtube")
-                            startActivity(intent)
-                        } catch (e: ActivityNotFoundException) {
-                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com")))
-                        }
-                    }
-                    !iconItem.url.isNullOrEmpty() -> {
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(iconItem.url))
-                        startActivity(browserIntent)
-                    }
-                    !iconItem.packageName.isNullOrEmpty() -> {
-                        launchApp(iconItem.packageName)
-                    }
-                    else -> {
-                        Log.e("VodActivity", "No valid action")
-                    }
-                }
+
+
+        // --- Tab Handling ---
+        appGamesTab.setOnClickListener {
+            showAppGamesIcons()
+        }
+
+        videoTab.setOnClickListener {
+            showVideoIcons()
+        }
+
+
+        // --- Initial Focus ---
+        iconRecyclerView.post {
+            if (appGamesIcons.isNotEmpty()) {
+                iconRecyclerView.getChildAt(0)?.requestFocus()
             }
         }
 
-        recyclerView.layoutManager = GridLayoutManager(this, 7)
-        recyclerView.adapter = adapter
-
-        recyclerView.post {
-            recyclerView.getChildAt(0)?.requestFocus()
+        // --- Shared Focus Change Listener ---
+        val onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                view.scaleX = 1.2f
+                view.scaleY = 1.2f
+                playSound()
+            } else {
+                view.scaleX = 1.0f
+                view.scaleY = 1.0f
+            }
         }
 
-        recyclerView.addOnChildAttachStateChangeListener(object :
+        // Apply focus listener to both RecyclerViews
+        iconRecyclerView.addOnChildAttachStateChangeListener(object :
             RecyclerView.OnChildAttachStateChangeListener {
             override fun onChildViewAttachedToWindow(view: View) {
-                view.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                    if (hasFocus) {
-                        view.scaleX = 1.2f
-                        view.scaleY = 1.2f
-                        playSound()
-                    } else {
-                        view.scaleX = 1.0f
-                        view.scaleY = 1.0f
-                    }
-                }
+                view.onFocusChangeListener = onFocusChangeListener
+            }
+
+            override fun onChildViewDetachedFromWindow(view: View) {}
+        })
+        videoRecyclerView.addOnChildAttachStateChangeListener(object :
+            RecyclerView.OnChildAttachStateChangeListener {
+            override fun onChildViewAttachedToWindow(view: View) {
+                view.onFocusChangeListener = onFocusChangeListener
             }
 
             override fun onChildViewDetachedFromWindow(view: View) {}
         })
 
-        settingsIcon.setOnClickListener {
-            openSettings()
-        }
+        // Initially show only Appsgames icons
+        showAppGamesIcons()
+    }
 
-        updateIcon.setOnClickListener {
-            openAppDetails()
-        }
-
-        settingsIcon.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                playSound()
-                view.scaleX = 1.2f
-                view.scaleY = 1.2f
-            } else {
-                view.scaleX = 1.0f
-                view.scaleY = 1.0f
-            }
-        }
-
-        settingsIcon.setOnHoverListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_HOVER_ENTER -> {
-                    v.setBackgroundColor(resources.getColor(android.R.color.darker_gray, null))
-                }
-                MotionEvent.ACTION_HOVER_EXIT -> {
-                    v.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                }
-            }
-            false
-        }
-
-        updateIcon.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                playSound()
-                view.scaleX = 1.2f
-                view.scaleY = 1.2f
-            } else {
-                view.scaleX = 1.0f
-                view.scaleY = 1.0f
-            }
-        }
-
-        updateIcon.setOnHoverListener { v, event ->
-            if (event.action == MotionEvent.ACTION_HOVER_ENTER) {
-                val width = v.width
-                val height = v.height
-                Toast.makeText(this, "Width: ${width}px, Height: ${height}px", Toast.LENGTH_SHORT).show()
-            }
-            false
+    private fun showAppGamesIcons() {
+        iconRecyclerView.visibility = View.VISIBLE
+        videoRecyclerView.visibility = View.GONE
+        if (appGamesIcons.isNotEmpty()) {
+            iconRecyclerView.getChildAt(0)?.requestFocus()
         }
     }
+
+    private fun showVideoIcons() {
+        iconRecyclerView.visibility = View.GONE
+        videoRecyclerView.visibility = View.VISIBLE
+        if (videoIcons.isNotEmpty()) {
+            videoRecyclerView.getChildAt(0)?.requestFocus()
+        }
+    }
+
+    private fun handleIconClick(iconItem: IconItem) {
+        when {
+            iconItem.packageName == "com.google.android.youtube" -> {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"))
+                    intent.setPackage("com.google.android.youtube")
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com")))
+                }
+            }
+            !iconItem.url.isNullOrEmpty() -> {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(iconItem.url))
+                startActivity(browserIntent)
+            }
+            !iconItem.packageName.isNullOrEmpty() -> {
+                launchApp(iconItem.packageName)
+            }
+            else -> {
+                Log.e("VodActivity", "No valid action")
+            }
+        }
+    }
+
 
     private fun launchApp(packageName: String) {
         try {
@@ -187,21 +174,6 @@ class VodActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("VodActivity", "Error launching app: $packageName", e)
         }
-    }
-
-    private fun openSettings() {
-        try {
-            val intent = Intent(android.provider.Settings.ACTION_SETTINGS)
-            startActivity(intent)
-        } catch (e: Exception) {
-            Log.e("VodActivity", "Unable to open settings", e)
-        }
-    }
-
-    private fun openAppDetails() {
-        val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.data = Uri.parse("package:$packageName")
-        startActivity(intent)
     }
 
     private fun initSoundPool() {

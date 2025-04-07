@@ -20,9 +20,6 @@ class EEducationActivity : AppCompatActivity() {
 
         // Define icon list with increased size
         val rightIcons = listOf(
-            IconItem(R.drawable.e_health, "", url = "https://health.telangana.gov.in"),
-            IconItem(R.drawable.about, "", "com.example.about"),
-            IconItem(R.drawable.digital_nidhi, "", url = "https://usof.gov.in/en/home"),
             IconItem(R.drawable.youtube, "", "com.google.android.youtube"), // YOUTUBE APP
             IconItem(R.drawable.tsat, "", url = "https://www.tsat.tv/") // TSAT APP
         )
